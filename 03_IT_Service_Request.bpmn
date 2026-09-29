@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://example.com/bpmn">
+<bpmn:process id="Process_1" isExecutable="false">
+<bpmn:startEvent id="StartEvent_1" name="IT problem reported"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent>
+<bpmn:userTask id="Task_Submit" name="Submit IT support request"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:userTask>
+<bpmn:serviceTask id="Task_Register" name="Register request"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:userTask id="Task_Severity" name="Check problem severity"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:userTask>
+<bpmn:exclusiveGateway id="Gateway_Severity" name="Severity?"><bpmn:incoming>Flow_4</bpmn:incoming><bpmn:outgoing>Flow_5</bpmn:outgoing><bpmn:outgoing>Flow_6</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:userTask id="Task_Support" name="Assign support technician"><bpmn:incoming>Flow_5</bpmn:incoming><bpmn:outgoing>Flow_7</bpmn:outgoing></bpmn:userTask>
+<bpmn:userTask id="Task_Senior" name="Assign senior technician"><bpmn:incoming>Flow_6</bpmn:incoming><bpmn:outgoing>Flow_8</bpmn:outgoing></bpmn:userTask>
+<bpmn:userTask id="Task_Investigate" name="Investigate problem"><bpmn:incoming>Flow_7</bpmn:incoming><bpmn:incoming>Flow_8</bpmn:incoming><bpmn:outgoing>Flow_9</bpmn:outgoing></bpmn:userTask>
+<bpmn:exclusiveGateway id="Gateway_Resolve" name="Can resolve internally?"><bpmn:incoming>Flow_9</bpmn:incoming><bpmn:outgoing>Flow_10</bpmn:outgoing><bpmn:outgoing>Flow_11</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:userTask id="Task_Fix" name="Fix problem"><bpmn:incoming>Flow_10</bpmn:incoming><bpmn:outgoing>Flow_12</bpmn:outgoing></bpmn:userTask>
+<bpmn:serviceTask id="Task_Escalate" name="Escalate to external provider"><bpmn:incoming>Flow_11</bpmn:incoming><bpmn:outgoing>Flow_13</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_Update" name="Update request status"><bpmn:incoming>Flow_12</bpmn:incoming><bpmn:incoming>Flow_13</bpmn:incoming><bpmn:outgoing>Flow_14</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_Notify" name="Send resolution notification"><bpmn:incoming>Flow_14</bpmn:incoming><bpmn:outgoing>Flow_15</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="End_1" name="Request resolved"><bpmn:incoming>Flow_15</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_Submit"/>
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_Submit" targetRef="Task_Register"/>
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Register" targetRef="Task_Severity"/>
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Task_Severity" targetRef="Gateway_Severity"/>
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_Severity" targetRef="Task_Support" name="Low"/>
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_Severity" targetRef="Task_Senior" name="High"/>
+<bpmn:sequenceFlow id="Flow_7" sourceRef="Task_Support" targetRef="Task_Investigate"/>
+<bpmn:sequenceFlow id="Flow_8" sourceRef="Task_Senior" targetRef="Task_Investigate"/>
+<bpmn:sequenceFlow id="Flow_9" sourceRef="Task_Investigate" targetRef="Gateway_Resolve"/>
+<bpmn:sequenceFlow id="Flow_10" sourceRef="Gateway_Resolve" targetRef="Task_Fix" name="Yes"/>
+<bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_Resolve" targetRef="Task_Escalate" name="No"/>
+<bpmn:sequenceFlow id="Flow_12" sourceRef="Task_Fix" targetRef="Task_Update"/>
+<bpmn:sequenceFlow id="Flow_13" sourceRef="Task_Escalate" targetRef="Task_Update"/>
+<bpmn:sequenceFlow id="Flow_14" sourceRef="Task_Update" targetRef="Task_Notify"/>
+<bpmn:sequenceFlow id="Flow_15" sourceRef="Task_Notify" targetRef="End_1"/>
+</bpmn:process>
+</bpmn:definitions>

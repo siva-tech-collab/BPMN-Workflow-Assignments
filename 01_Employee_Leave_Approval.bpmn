@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://example.com/bpmn">
+<bpmn:process id="Process_1" isExecutable="false">
+<bpmn:startEvent id="StartEvent_1" name="Leave request submitted"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent>
+<bpmn:serviceTask id="Task_CheckBalance" name="Check leave balance"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:exclusiveGateway id="Gateway_Balance" name="Sufficient balance?"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:userTask id="Task_Manager" name="Manager approval"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_5</bpmn:outgoing></bpmn:userTask>
+<bpmn:exclusiveGateway id="Gateway_Approval" name="Approved?"><bpmn:incoming>Flow_5</bpmn:incoming><bpmn:outgoing>Flow_6</bpmn:outgoing><bpmn:outgoing>Flow_7</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:serviceTask id="Task_Update" name="Update leave balance"><bpmn:incoming>Flow_6</bpmn:incoming><bpmn:outgoing>Flow_8</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_ApproveNotify" name="Send approval notification"><bpmn:incoming>Flow_8</bpmn:incoming><bpmn:outgoing>Flow_9</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_RejectNotify" name="Send rejection notification"><bpmn:incoming>Flow_7</bpmn:incoming><bpmn:outgoing>Flow_10</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_Insufficient" name="Send insufficient-balance notification"><bpmn:incoming>Flow_4</bpmn:incoming><bpmn:outgoing>Flow_11</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="End_Approved" name="Approved"><bpmn:incoming>Flow_9</bpmn:incoming></bpmn:endEvent>
+<bpmn:endEvent id="End_Rejected" name="Rejected"><bpmn:incoming>Flow_10</bpmn:incoming></bpmn:endEvent>
+<bpmn:endEvent id="End_Insufficient" name="Insufficient balance"><bpmn:incoming>Flow_11</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_CheckBalance"/>
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_CheckBalance" targetRef="Gateway_Balance"/>
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_Balance" targetRef="Task_Manager" name="Yes"/>
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_Balance" targetRef="Task_Insufficient" name="No"/>
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Task_Manager" targetRef="Gateway_Approval"/>
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_Approval" targetRef="Task_Update" name="Yes"/>
+<bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_Approval" targetRef="Task_RejectNotify" name="No"/>
+<bpmn:sequenceFlow id="Flow_8" sourceRef="Task_Update" targetRef="Task_ApproveNotify"/>
+<bpmn:sequenceFlow id="Flow_9" sourceRef="Task_ApproveNotify" targetRef="End_Approved"/>
+<bpmn:sequenceFlow id="Flow_10" sourceRef="Task_RejectNotify" targetRef="End_Rejected"/>
+<bpmn:sequenceFlow id="Flow_11" sourceRef="Task_Insufficient" targetRef="End_Insufficient"/>
+</bpmn:process>
+</bpmn:definitions>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://example.com/bpmn">
+<bpmn:process id="Process_1" isExecutable="false">
+<bpmn:startEvent id="StartEvent_1" name="Customer places order"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent>
+<bpmn:serviceTask id="Task_CheckStock" name="Check product availability"><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:exclusiveGateway id="Gateway_Stock" name="Product available?"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_3</bpmn:outgoing><bpmn:outgoing>Flow_4</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:serviceTask id="Task_Payment" name="Process payment"><bpmn:incoming>Flow_3</bpmn:incoming><bpmn:outgoing>Flow_6</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:exclusiveGateway id="Gateway_Payment" name="Payment successful?"><bpmn:incoming>Flow_6</bpmn:incoming><bpmn:outgoing>Flow_7</bpmn:outgoing><bpmn:outgoing>Flow_8</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:serviceTask id="Task_Confirm" name="Confirm order"><bpmn:incoming>Flow_7</bpmn:incoming><bpmn:outgoing>Flow_10</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_Prepare" name="Prepare product for shipment"><bpmn:incoming>Flow_10</bpmn:incoming><bpmn:outgoing>Flow_11</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_Ship" name="Ship order"><bpmn:incoming>Flow_11</bpmn:incoming><bpmn:outgoing>Flow_12</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_ShippingNotify" name="Send shipping confirmation"><bpmn:incoming>Flow_12</bpmn:incoming><bpmn:outgoing>Flow_13</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_OutStock" name="Notify out of stock"><bpmn:incoming>Flow_4</bpmn:incoming><bpmn:outgoing>Flow_5</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:serviceTask id="Task_PayFail" name="Notify payment failure"><bpmn:incoming>Flow_8</bpmn:incoming><bpmn:outgoing>Flow_9</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="End_Success" name="Order completed"><bpmn:incoming>Flow_13</bpmn:incoming></bpmn:endEvent>
+<bpmn:endEvent id="End_OutStock" name="Out of stock"><bpmn:incoming>Flow_5</bpmn:incoming></bpmn:endEvent>
+<bpmn:endEvent id="End_PayFail" name="Payment failed"><bpmn:incoming>Flow_9</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_CheckStock"/>
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_CheckStock" targetRef="Gateway_Stock"/>
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_Stock" targetRef="Task_Payment" name="Yes"/>
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_Stock" targetRef="Task_OutStock" name="No"/>
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Task_OutStock" targetRef="End_OutStock"/>
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Task_Payment" targetRef="Gateway_Payment"/>
+<bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_Payment" targetRef="Task_Confirm" name="Yes"/>
+<bpmn:sequenceFlow id="Flow_8" sourceRef="Gateway_Payment" targetRef="Task_PayFail" name="No"/>
+<bpmn:sequenceFlow id="Flow_9" sourceRef="Task_PayFail" targetRef="End_PayFail"/>
+<bpmn:sequenceFlow id="Flow_10" sourceRef="Task_Confirm" targetRef="Task_Prepare"/>
+<bpmn:sequenceFlow id="Flow_11" sourceRef="Task_Prepare" targetRef="Task_Ship"/>
+<bpmn:sequenceFlow id="Flow_12" sourceRef="Task_Ship" targetRef="Task_ShippingNotify"/>
+<bpmn:sequenceFlow id="Flow_13" sourceRef="Task_ShippingNotify" targetRef="End_Success"/>
+</bpmn:process>
+</bpmn:definitions>
